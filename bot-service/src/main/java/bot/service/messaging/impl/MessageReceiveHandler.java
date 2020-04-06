@@ -6,7 +6,7 @@ import bot.service.initializer.Bot;
 import bot.service.messaging.IMessageReceiveHandler;
 import bot.service.messaging.IResponseCreatingService;
 import bot.service.messaging.IResponsePreparatoryService;
-import bot.service.parser.Parser;
+import bot.service.parser.CommandParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -14,8 +14,10 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.Optional;
+
 import static bot.service.messaging.MessageTemplates.IMPOSSIBLE_ACTION;
-import static bot.service.parser.impl.CommandParser.isCommand;
+import static bot.service.parser.CommandParser.isCommand;
 import static bot.service.utils.MessageUtils.defineMessageType;
 
 /**
@@ -26,7 +28,7 @@ import static bot.service.utils.MessageUtils.defineMessageType;
 public class MessageReceiveHandler implements IMessageReceiveHandler {
 
     @Autowired
-    private Parser<ParsedCommandInfo> commandParser;
+    private CommandParser commandParser;
 
     @Autowired
     private IResponsePreparatoryService responsePreparatoryService;
@@ -44,20 +46,22 @@ public class MessageReceiveHandler implements IMessageReceiveHandler {
 
     private void processUpdate(Update update, Bot botInstance) {
         Message msg = update.getMessage();
-        PartialBotApiMethod<Message> data = null;
+        Optional.ofNullable(msg).ifPresent((message -> {
+            PartialBotApiMethod<Message> data = null;
 
-        MessageType messageType = defineMessageType(msg);
+            MessageType messageType = defineMessageType(msg);
 
-        switch (messageType) {
-            case TEXT: {
-                data = isCommand(msg.getText()) ? processCommandTextMessage(msg) : processNonCommandTextMessage(msg);
-                break;
+            switch (messageType) {
+                case TEXT: {
+                    data = isCommand(msg.getText()) ? processCommandTextMessage(msg) : processNonCommandTextMessage(msg);
+                    break;
+                }
+                case UNDEFINED: {
+                    data = responseCreatingService.createSendMessageResponse(msg, IMPOSSIBLE_ACTION);
+                }
             }
-            case UNDEFINED: {
-                data = responseCreatingService.createSendMessageResponse(msg, IMPOSSIBLE_ACTION);
-            }
-        }
-        botInstance.getSendData().add(data);
+            botInstance.getSendData().add(data);
+        }));
     }
 
     private SendMessage processCommandTextMessage(Message msg) {

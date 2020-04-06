@@ -6,6 +6,6 @@ import bot.domain.parsing.ParsedInfo;
  * @author Artyom Konashchenko
  * @since 06.04.2020
  */
-public interface Parser <T extends ParsedInfo> {
-    T parse(String incomeText);
+public abstract class Parser<T extends ParsedInfo> {
+    protected abstract T parse(String incomeText);
 }

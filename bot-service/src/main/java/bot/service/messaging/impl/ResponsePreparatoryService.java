@@ -11,7 +11,7 @@ import bot.persistence.ICityRepository;
 import bot.service.converters.CityConverter;
 import bot.service.messaging.IResponseCreatingService;
 import bot.service.messaging.IResponsePreparatoryService;
-import bot.service.parser.Parser;
+import bot.service.parser.CityParser;
 import bot.service.utils.Randomizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,7 +44,7 @@ public class ResponsePreparatoryService implements IResponsePreparatoryService {
     private CityConverter cityConverter;
 
     @Autowired
-    private Parser<ParsedCityInfo> cityParser;
+    private CityParser cityParser;
 
     @Autowired
     private IResponseCreatingService responseCreatingService;

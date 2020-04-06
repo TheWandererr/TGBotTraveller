@@ -1,8 +1,7 @@
-package bot.service.parser.impl;
+package bot.service.parser;
 
 import bot.domain.content.Command;
 import bot.domain.parsing.ParsedCommandInfo;
-import bot.service.parser.Parser;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,7 @@ import static bot.service.messaging.MessageTemplates.ERROR_PARSING_COMMAND;
  * @since 04.04.2020
  */
 @Service
-public class CommandParser implements Parser<ParsedCommandInfo> {
+public class CommandParser extends Parser<ParsedCommandInfo> {
 
     private static final int NOT_PRESENT = -1;
     private static final String COMMAND_PREFIX = "/";

@@ -1,7 +1,6 @@
-package bot.service.parser.impl;
+package bot.service.parser;
 
 import bot.domain.parsing.ParsedCityInfo;
-import bot.service.parser.Parser;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,7 @@ import static bot.service.utils.StringUtils.safeArrayFrom;
  * @since 06.04.2020
  */
 @Service
-public class CityParser implements Parser<ParsedCityInfo> {
+public class CityParser extends Parser<ParsedCityInfo> {
 
     private static final int EMPTY = 0;
     private static final int CITY_NAME_COMPOSITE = 2;
